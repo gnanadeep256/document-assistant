@@ -14,9 +14,7 @@ from retrieval.aggregation import aggregate_section, aggregate_global
 from llm.offline_ollama import OfflineLLM
 from llm.online_gemini import OnlineGeminiLLM
 
-# ----------------------------
 # Paths
-# ----------------------------
 RAW_DIR = Path("data/raw")
 PROCESSED_DIR = Path("data/processed")
 VECTOR_DIR = Path("data/vector_db")
@@ -27,22 +25,20 @@ PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 PAGES_FILE = PROCESSED_DIR / "pages.json"
 CHUNKS_FILE = PROCESSED_DIR / "chunks.json"
 
-# ----------------------------
 # Streamlit config
-# ----------------------------
 st.set_page_config(
     page_title="Document Intelligence Copilot",
     layout="wide",
 )
 
-st.title("📄 Document Intelligence Copilot")
+st.title("Document Intelligence Copilot")
 st.caption("Chat with your documents — Non-LLM | Offline LLaMA | Online Gemini")
 
 # ----------------------------
 # Sidebar
 # ----------------------------
 with st.sidebar:
-    st.header("⚙️ Settings")
+    st.header("Settings")
 
     mode = st.radio(
         "Inference mode",
@@ -58,23 +54,20 @@ with st.sidebar:
         type=["pdf"],
     )
 
-    if st.button("🔄 Reset chat"):
+    if st.button("Reset chat"):
         st.session_state.chat = []
         st.session_state.indexed = False
         st.experimental_rerun()
 
-# ----------------------------
 # Session state
-# ----------------------------
 if "chat" not in st.session_state:
     st.session_state.chat = []
 
 if "indexed" not in st.session_state:
     st.session_state.indexed = False
 
-# ----------------------------
-# PDF ingestion & indexing (FIXED)
-# ----------------------------
+# PDF ingestion & indexing 
+
 if uploaded_file and not st.session_state.indexed:
     with st.spinner("Indexing document… This may take a minute."):
 
@@ -106,11 +99,9 @@ if uploaded_file and not st.session_state.indexed:
 
         st.session_state.indexed = True
 
-    st.success("✅ Document indexed successfully. Ask away!")
+    st.success("Document indexed successfully. Ask away!")
 
-# ----------------------------
 # Load retriever & LLM
-# ----------------------------
 retriever = Retriever()
 llm = None
 
@@ -119,16 +110,12 @@ if mode == "Offline LLM (LLaMA-3 via Ollama)":
 elif mode == "Online LLM (Gemini)":
     llm = OnlineGeminiLLM()
 
-# ----------------------------
 # Render chat history
-# ----------------------------
 for msg in st.session_state.chat:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# ----------------------------
 # Chat input
-# ----------------------------
 query = st.chat_input("Ask a question about the document…")
 
 if query:
