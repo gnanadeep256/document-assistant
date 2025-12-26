@@ -57,7 +57,7 @@ with st.sidebar:
     if st.button("Reset chat"):
         st.session_state.chat = []
         st.session_state.indexed = False
-        st.experimental_rerun()
+        st.rerun()
 
 # Session state
 if "chat" not in st.session_state:
